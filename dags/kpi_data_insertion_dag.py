@@ -62,6 +62,7 @@ def insert_kpi_storage_usage():
     connection.commit()
     connection.close()
 
+# Default arguments for the DAG
 default_args = {
     "owner": "airflow",
     "depends_on_past": False,
@@ -71,6 +72,7 @@ default_args = {
     "retry_delay": timedelta(minutes=5),
 }
 
+# Defining the DAG
 with DAG(
     "data_warehouse_kpis_insert",
     start_date=datetime(2024, 9, 6),
@@ -80,6 +82,7 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    # Defining tasks
     insert_transaction_kpi = PythonOperator(
         task_id='insert_kpi_transaction_data',
         python_callable=insert_kpi_transaction_data,
@@ -90,4 +93,5 @@ with DAG(
         python_callable=insert_kpi_storage_usage,
     )
 
+    # Task dependencies
     insert_transaction_kpi >> insert_storage_kpi
