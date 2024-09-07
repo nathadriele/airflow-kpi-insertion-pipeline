@@ -26,6 +26,13 @@ def insert_kpi_transaction_data():
     connection.close()
 
 def insert_kpi_storage_usage():
+    """
+    Inserts KPI data related to storage usage.
+
+    This function calculates the percentage of used storage by comparing the average 
+    storage utilization with the available capacity. The results are inserted into the 
+    `data_warehouse.storage_usage` table for monitoring storage health.
+    """
     pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID, schema=SCHEMA)
     connection = pg_hook.get_conn()
     cursor = connection.cursor()
@@ -63,6 +70,7 @@ with DAG(
     max_active_runs=1,
     schedule_interval='0 * * * *',
     default_args=default_args,
+    catchup=False,
 ) as dag:
 
     insert_transaction_kpi = PythonOperator(
