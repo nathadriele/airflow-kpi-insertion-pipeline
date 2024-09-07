@@ -16,3 +16,9 @@ The objective of this project is to:
 - Apache Airflow 2.7+: Install and configure Apache Airflow 2.7 or later. Refer to the [Airflow installation guide](https://airflow.apache.org/docs/apache-airflow/stable/installation/index.html).
 - PostgreSQL 12+: Set up a PostgreSQL 12 or later database with connection details configured in Airflow.
 - Airflow Connection: Configure a PostgreSQL connection in Airflow with the ID data_warehouse_conn_id.
+
+### Contribution to Data Engineering
+This project demonstrates key concepts in Data Engineering, including:
+- Automated ETL (Extract, Transform, Load): A fully automated pipeline for collecting KPIs, transforming them, and loading them into a Data Warehouse.
+- Airflow DAG Management: How to use Apache Airflow for orchestrating ETL jobs, which is an industry standard for data engineering workflows.
+- Data Quality: Ensures that KPIs are inserted correctly and at regular intervals, supporting accurate and timely data for decision-making.
