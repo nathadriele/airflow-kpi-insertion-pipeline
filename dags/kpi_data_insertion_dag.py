@@ -7,12 +7,15 @@ POSTGRES_CONN_ID = "data_warehouse_conn_id"
 SCHEMA = "business_metrics"
 
 def get_postgres_connection():
+    """Gets a connection to the PostgreSQL database."""
     pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID, schema=SCHEMA)
     return pg_hook.get_conn()
 
 def execute_query(connection, query):
+    """Executes a query on the database."""
     with connection.cursor() as cursor:
         cursor.execute(query)
+        connection.commit()
 
 def insert_kpi_transaction_data(**kwargs):
     """
@@ -35,7 +38,7 @@ def insert_kpi_transaction_data(**kwargs):
         execute_query(connection, query)
         connection.close()
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error entering transaction KPI data: {e}")
 
 def insert_kpi_storage_usage(**kwargs):
     """
@@ -79,7 +82,7 @@ with DAG(
     "data_warehouse_kpis_insert",
     start_date=datetime(2024, 9, 6),
     max_active_runs=1,
-    schedule_interval='0 * * * *',
+    schedule_interval='0 * * * *',  # Executes every hour
     default_args=default_args,
     catchup=False,
 ) as dag:
