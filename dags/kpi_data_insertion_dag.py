@@ -62,7 +62,7 @@ def insert_kpi_storage_usage(**kwargs):
         execute_query(connection, query)
         connection.close()
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error entering storage usage KPI data: {e}")
 
 # Default arguments for the DAG
 default_args = {
