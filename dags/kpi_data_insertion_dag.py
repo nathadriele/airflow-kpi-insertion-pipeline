@@ -23,6 +23,7 @@ def insert_kpi_transaction_data():
     cursor.execute(query)
     cursor.close()
     connection.commit()
+    connection.close()
 
 def insert_kpi_storage_usage():
     pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID, schema=SCHEMA)
@@ -45,6 +46,7 @@ def insert_kpi_storage_usage():
     cursor.execute(query)
     cursor.close()
     connection.commit()
+    connection.close()
 
 default_args = {
     "owner": "airflow",
