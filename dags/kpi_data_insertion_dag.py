@@ -12,6 +12,7 @@ def insert_kpi_transaction_data():
 
     This function calculates the elapsed time in minutes between the most recent transaction 
     and the current system time (or a specific timezone) for multiple transaction sources. 
+    The results are inserted into the `data_warehouse.load_times` table for further analysis.
     """
     pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID, schema=SCHEMA)
     connection = pg_hook.get_conn()
