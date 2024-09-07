@@ -7,6 +7,12 @@ POSTGRES_CONN_ID = "data_warehouse_conn_id"
 SCHEMA = "business_metrics"
 
 def insert_kpi_transaction_data():
+    """
+    Inserts KPI data related to transaction times across different systems.
+
+    This function calculates the elapsed time in minutes between the most recent transaction 
+    and the current system time (or a specific timezone) for multiple transaction sources. 
+    """
     pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID, schema=SCHEMA)
     connection = pg_hook.get_conn()
     cursor = connection.cursor()
