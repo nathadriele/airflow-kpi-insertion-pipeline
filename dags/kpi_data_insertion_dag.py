@@ -6,7 +6,15 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 POSTGRES_CONN_ID = "data_warehouse_conn_id"
 SCHEMA = "business_metrics"
 
-def insert_kpi_transaction_data():
+def get_postgres_connection():
+    pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID, schema=SCHEMA)
+    return pg_hook.get_conn()
+
+def execute_query(connection, query):
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+
+def insert_kpi_transaction_data(**kwargs):
     """
     Inserts KPI data related to transaction times across different systems.
 
@@ -14,25 +22,22 @@ def insert_kpi_transaction_data():
     and the current system time (or a specific timezone) for multiple transaction sources. 
     The results are inserted into the `data_warehouse.load_times` table for further analysis.
     """
-    pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID, schema=SCHEMA)
-    connection = pg_hook.get_conn()
-    cursor = connection.cursor()
-    
-    query = """
-    INSERT INTO data_warehouse.load_times (time_elapsed)
-    VALUES (
-        (SELECT DATEDIFF(minutes, MAX(T.created_at), SYSDATE) AS elapsed_time FROM business_metrics.transactions T),
-        (SELECT DATEDIFF(minutes, MAX(T.created_at), CONVERT_TIMEZONE('America/Sao_Paulo', SYSDATE)) AS elapsed_time FROM ecommerce_transactions.transactions T),
-        (SELECT DATEDIFF(minutes, MAX(T.created_at), CONVERT_TIMEZONE('America/Sao_Paulo', SYSDATE)) AS elapsed_time FROM api_transactions.transactions T)
-    )
-    """
-    
-    cursor.execute(query)
-    cursor.close()
-    connection.commit()
-    connection.close()
+    try:
+        connection = get_postgres_connection()
+        query = """
+        INSERT INTO data_warehouse.load_times (time_elapsed)
+        VALUES (
+            (SELECT DATEDIFF(minutes, MAX(T.created_at), SYSDATE) AS elapsed_time FROM business_metrics.transactions T),
+            (SELECT DATEDIFF(minutes, MAX(T.created_at), CONVERT_TIMEZONE('America/Sao_Paulo', SYSDATE)) AS elapsed_time FROM ecommerce_transactions.transactions T),
+            (SELECT DATEDIFF(minutes, MAX(T.created_at), CONVERT_TIMEZONE('America/Sao_Paulo', SYSDATE)) AS elapsed_time FROM api_transactions.transactions T)
+        )
+        """
+        execute_query(connection, query)
+        connection.close()
+    except Exception as e:
+        print(f"Error: {e}")
 
-def insert_kpi_storage_usage():
+def insert_kpi_storage_usage(**kwargs):
     """
     Inserts KPI data related to storage usage.
 
@@ -40,27 +45,24 @@ def insert_kpi_storage_usage():
     storage utilization with the available capacity. The results are inserted into the 
     `data_warehouse.storage_usage` table for monitoring storage health.
     """
-    pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID, schema=SCHEMA)
-    connection = pg_hook.get_conn()
-    cursor = connection.cursor()
-
-    query = """
-    INSERT INTO data_warehouse.storage_usage (percentage_used)
-    VALUES (
-        SELECT (CAST(avg_used AS DECIMAL(10, 2)) / CAST(avg_capacity AS DECIMAL(10, 2)) * 100) AS percentage_used
-        FROM (
-            SELECT
-                AVG(used) AS avg_used,
-                AVG(capacity) AS avg_capacity
-            FROM system_storage_capacity
+    try:
+        connection = get_postgres_connection()
+        query = """
+        INSERT INTO data_warehouse.storage_usage (percentage_used)
+        VALUES (
+            SELECT (CAST(avg_used AS DECIMAL(10, 2)) / CAST(avg_capacity AS DECIMAL(10, 2)) * 100) AS percentage_used
+            FROM (
+                SELECT
+                    AVG(used) AS avg_used,
+                    AVG(capacity) AS avg_capacity
+                FROM system_storage_capacity
+            )
         )
-    )
-    """
-    
-    cursor.execute(query)
-    cursor.close()
-    connection.commit()
-    connection.close()
+        """
+        execute_query(connection, query)
+        connection.close()
+    except Exception as e:
+        print(f"Error: {e}")
 
 # Default arguments for the DAG
 default_args = {
