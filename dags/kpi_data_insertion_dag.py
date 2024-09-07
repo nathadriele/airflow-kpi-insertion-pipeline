@@ -82,7 +82,7 @@ with DAG(
     "data_warehouse_kpis_insert",
     start_date=datetime(2024, 9, 6),
     max_active_runs=1,
-    schedule_interval='0 * * * *',  # Executes every hour
+    schedule_interval='0 * * * *',
     default_args=default_args,
     catchup=False,
 ) as dag:
