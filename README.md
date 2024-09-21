@@ -20,12 +20,14 @@ The objective of this project is to:
 ### Code Explanation
 
 **DAG Configuration**
+
 The DAG defined in this project is scheduled to run every hour (0 * * * *), ensuring regular updates of KPI data. The key tasks include:
 
 - Inserting Transaction KPI Data: This task calculates and inserts the elapsed transaction time from multiple systems.
 - Inserting Storage Usage KPI Data: This task monitors storage utilization and inserts usage percentages into the Data Warehouse.
 
 **DAG Tasks**
+
 - insert_kpi_transaction_data: This Python function extracts the most recent transaction times from various systems and calculates the elapsed time in minutes. The results are inserted into the data_warehouse.load_times table.
 - insert_kpi_storage_usage: This function calculates the percentage of used storage compared to the available capacity. The data is inserted into the data_warehouse.storage_usage table for monitoring purposes.
 
