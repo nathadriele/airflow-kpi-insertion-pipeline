@@ -17,6 +17,12 @@ The objective of this project is to:
 - PostgreSQL 12+: Set up a PostgreSQL 12 or later database with connection details configured in Airflow.
 - Airflow Connection: Configure a PostgreSQL connection in Airflow with the ID data_warehouse_conn_id.
 
+### Code Explanation
+
+**DAG Tasks**
+- insert_kpi_transaction_data: This Python function extracts the most recent transaction times from various systems and calculates the elapsed time in minutes. The results are inserted into the data_warehouse.load_times table.
+- insert_kpi_storage_usage: This function calculates the percentage of used storage compared to the available capacity. The data is inserted into the data_warehouse.storage_usage table for monitoring purposes.
+
 ### Contribution to Data Engineering
 This project demonstrates key concepts in Data Engineering, including:
 - Automated ETL (Extract, Transform, Load): A fully automated pipeline for collecting KPIs, transforming them, and loading them into a Data Warehouse.
