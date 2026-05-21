@@ -1,7 +1,5 @@
 ## Automated KPI Data Insertion for Data Warehouse Using Apache Airflow
 
-![image](https://github.com/user-attachments/assets/b6614505-1557-4d6c-9f2d-8d839600da34)
-
 ### Overview
 This project implements an Apache Airflow DAG to automate the insertion of Key Performance Indicators (KPIs) into a Data Warehouse. The DAG retrieves metrics such as transaction times and storage usage from various systems and inserts them into specific tables for ongoing analysis and monitoring. By automating this process, the pipeline ensures regular updates and provides timely data for reporting and decision-making.
 
